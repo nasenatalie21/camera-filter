@@ -45,7 +45,7 @@ function call() {
     } else{
         cameraStart();
     }
-    callOne = !callOne;
+    // callOne = !callOne;
 }
 
 cameraSwitch.onclick = function() {
