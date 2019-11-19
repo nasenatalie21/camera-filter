@@ -50,6 +50,7 @@ function call() {
 
 cameraSwitch.onclick = function() {
     call();
+    call();
 }
 
 // Take a picture when cameraTrigger is tapped
