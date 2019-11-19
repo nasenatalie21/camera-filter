@@ -23,7 +23,7 @@ function cameraStart() {
         .catch(function(error) {
             console.error("Oops. Something is broken.", error);
         });
-    document.getElementById('camera--switch').onclick = cameraStart2;
+    document.getElementById('camera--switch').onclick = cameraStart2();
 }
 
 // Access the device camera and stream to cameraView (Back Cam)
@@ -37,7 +37,7 @@ function cameraStart2() {
         .catch(function(error) {
             console.error("Oops. Something is broken.", error);
         });
-    document.getElementById('camera--switch').onclick = cameraStart;
+    document.getElementById('camera--switch').onclick = cameraStart();
 }
 
 
