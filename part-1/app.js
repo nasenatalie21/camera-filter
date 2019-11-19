@@ -37,9 +37,8 @@ function cameraStart2() {
         .catch(function(error) {
             console.error("Oops. Something is broken.", error);
         });
-    document.getElementById('camera--switch').onclick = cameraStart();
 }
-
+document.getElementById('camera--switch').onclick = cameraStart();
 
 // function three(){
 //     cameraStart2();
