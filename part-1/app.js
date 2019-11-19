@@ -23,6 +23,7 @@ function cameraStart() {
         .catch(function(error) {
             console.error("Oops. Something is broken.", error);
         });
+    document.getElementById('camera--switch').onclick = cameraStart2;
 }
 
 // Access the device camera and stream to cameraView (Back Cam)
@@ -37,25 +38,26 @@ function cameraStart2() {
             console.error("Oops. Something is broken.", error);
         });
 }
+document.getElementById('camera--switch').onclick = cameraStart;
 
-function three(){
-    cameraStart2();
-    cameraStart();
+// function three(){
+//     cameraStart2();
+//     cameraStart();
+// }
+
+var callOne = true;
+function call() {
+    if(callOne){
+        cameraStart2();
+    } else if(!callOne){
+        cameraStart();
+    }
+    callOne = !callOne;
 }
 
-// var callOne = true;
-// function call() {
-//     if(callOne){
-//         cameraStart2();
-//     } else if(!callOne){
-//         cameraStart();
-//     }
-//     callOne = !callOne;
-// }
-
-// cameraSwitch.onclick = function() {
-//     call();
-// }
+cameraSwitch.onclick = function() {
+    call();
+}
 
 // Take a picture when cameraTrigger is tapped
 cameraTrigger.onclick = function() {
