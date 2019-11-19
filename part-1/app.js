@@ -46,19 +46,19 @@ function cameraStart2() {
 //     cameraStart();
 // }
 
-var callOne = true;
-function call() {
-    if(callOne){
-        cameraStart2();
-    } else if(!callOne){
-        cameraStart();
-    }
-    callOne = !callOne;
-}
+// var callOne = true;
+// function call() {
+//     if(callOne){
+//         cameraStart2();
+//     } else if(!callOne){
+//         cameraStart();
+//     }
+//     callOne = !callOne;
+// }
 
-cameraSwitch.onclick = function() {
-    call();
-}
+// cameraSwitch.onclick = function() {
+//     call();
+// }
 
 // Take a picture when cameraTrigger is tapped
 cameraTrigger.onclick = function() {
