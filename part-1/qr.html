@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>TAPNow QR Code Scanner</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+        integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <style>
+        @import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            background: white;
+            color: #424242;
+        }
+
+        .header {
+            background: #01d600;
+            height: 4em;
+            padding: 19px;
+            padding-bottom: 100px;
+            color: white;
+            font-weight: 400;
+            margin-bottom: 50px;
+        }
+
+        .margin {
+            margin-top: 1.5em;
+        }
+
+        select {
+            background-color: #01d600;
+            border-radius: 5px;
+            padding: 10px;
+        }
+
+        video{
+            filter:
+        }
+    </style>
+
+</head>
+
+<body>
+    <center>
+        <div class="container-fluid header">
+            <div class="row">
+                <div class="col">
+                    <h1 class="title">TAPNow QR Code Scanner</h1>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div>
+                <video id="video" width="300" height="200" style="border: 1px solid gray; object-fit: cover;"></video>
+            </div>
+
+            <div class="row margin">
+                <div class="col">
+                    <pre><code id="result" style="display: none;"></code></pre>
+                </div>
+            </div>
+            <!-- <a href="javascript:window.open('./index.html', 'yourWindowName', 'width=200,height=150');">Test</a> -->
+            <div class="row margin">
+                <div class="col"><a class="button" id="startButton"><button class="btn btn-success btn-md btn-block"><i
+                                class="fas fa-qrcode"></i> SCAN</button></a></div>
+                <div class="col"><a class="button" id="resetButton"><button class="btn btn-success btn-md btn-block"><i
+                                class="fas fa-redo"></i> RESET</button></a></div>
+                <!-- <div class="col"><a class="button" id="saveButton"><button class="btn btn-success btn-md btn-block"><i
+                                class="far fa-save"></i> SAVE</button></a></div> -->
+            </div>
+
+            <div class="row margin" id="sourceSelectPanel" style="display:none">
+                <div class="col">
+                    <label for="sourceSelect">Change video source:</label><br>
+                    <select id="sourceSelect" style="max-width:400px"></select><br><br>
+                </div>
+            </div>
+
+            <div style="display: table">
+                <label for="decoding-style"> Decoding Style:</label><br>
+
+                <select id="decoding-style" size="1">
+                    <option value="once">Decode once</option>
+                    <option value="continuously">Decode continuously</option>
+                </select>
+
+            </div>
+        </div>
+
+        <script type="text/javascript" src="https://unpkg.com/@zxing/library@latest"></script>
+        <script type="text/javascript">
+            function decodeOnce(codeReader, selectedDeviceId) {
+                codeReader.decodeFromInputVideoDevice(selectedDeviceId, 'video').then((result) => {
+                    console.log(result)
+                    document.getElementById('result').textContent = result.text
+                    window.location.href = result.text
+                }).catch((err) => {
+                    console.error(err)
+                    document.getElementById('result').textContent = err
+                })
+            }
+            function decodeContinuously(codeReader, selectedDeviceId) {
+                codeReader.decodeFromInputVideoDeviceContinuously(selectedDeviceId, 'video', (result, err) => {
+                    if (result) {
+                        // properly decoded qr code
+                        console.log('Found QR code!', result)
+                        document.getElementById('result').textContent = result.text
+                        window.location.href = result.text
+                    }
+                    if (err) {
+                        if (err instanceof ZXing.NotFoundException) {
+                            console.log('No QR code found.')
+                        }
+                        if (err instanceof ZXing.ChecksumException) {
+                            console.log('A code was found, but it\'s read value was not valid.')
+                        }
+                        if (err instanceof ZXing.FormatException) {
+                            console.log('A code was found, but it was in a invalid format.')
+                        }
+                    }
+                })
+            }
+            window.addEventListener('load', function () {
+                let selectedDeviceId;
+                const codeReader = new ZXing.BrowserQRCodeReader()
+                console.log('ZXing code reader initialized')
+                codeReader.getVideoInputDevices()
+                    .then((videoInputDevices) => {
+                        const sourceSelect = document.getElementById('sourceSelect')
+                        selectedDeviceId = videoInputDevices[0].deviceId
+                        if (videoInputDevices.length >= 1) {
+                            videoInputDevices.forEach((element) => {
+                                const sourceOption = document.createElement('option')
+                                sourceOption.text = element.label
+                                sourceOption.value = element.deviceId
+                                sourceSelect.appendChild(sourceOption)
+                            })
+                            sourceSelect.onchange = () => {
+                                selectedDeviceId = sourceSelect.value;
+                            };
+                            const sourceSelectPanel = document.getElementById('sourceSelectPanel')
+                            sourceSelectPanel.style.display = 'block'
+                        }
+                        document.getElementById('startButton').addEventListener('click', () => {
+                            const decodingStyle = document.getElementById('decoding-style').value;
+                            if (decodingStyle == "once") {
+                                decodeOnce(codeReader, selectedDeviceId);
+                            } else {
+                                decodeContinuously(codeReader, selectedDeviceId);
+                            }
+                            console.log(`Started decode from camera with id ${selectedDeviceId}`)
+                        })
+                        document.getElementById('resetButton').addEventListener('click', () => {
+                            codeReader.reset()
+                            document.getElementById('result').textContent = '';
+                            console.log('Reset.')
+                        })
+                    })
+                    .catch((err) => {
+                        console.error(err)
+                    })
+            })
+        </script>
+    </center>
+</body>
+
+</html>
