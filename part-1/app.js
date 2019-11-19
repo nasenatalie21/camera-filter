@@ -42,10 +42,10 @@ var callOne = true;
 function call() {
     if(callOne){
         cameraStart2();
-    } else{
+    } else if(!callOne){
         cameraStart();
     }
-    // callOne = !callOne;
+    callOne = !callOne;
 }
 
 cameraSwitch.onclick = function() {
